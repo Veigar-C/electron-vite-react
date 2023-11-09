@@ -1,38 +1,70 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import UpdateElectron from '@/components/update'
 import logoVite from './assets/logo-vite.svg'
 import logoElectron from './assets/logo-electron.svg'
 import './App.css'
+import Editor from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
-console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
+// console.log('[App.tsx]', `Hello world from Electron ${process.versions.electron}!`)
+
+
+const getMD =()=>{
+  return new Promise((resolve)=>{
+    const fs = require('fs');
+    const path = 'C:\\Users\\Administrator\\Desktop\\事务日志 - 副本.md';
+    fs.readFile(path,'utf-8',(error:any,data:any)=>{
+      if(error){
+        console.log(error);
+        return;
+     }
+     resolve(data)
+    });
+  })
+}
+
+const setMd =(editor:any)=>{
+  const fs = require('fs');
+  const path = 'C:\\Users\\Administrator\\Desktop\\事务日志 - 副本.md';
+  const value = editor.getMarkdown();
+  fs.writeFile(path,value,()=>{
+
+  });
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0);
+  const [value, setValue] = useState('');
+  useEffect(()=>{
+    getMD().then((res:any)=>{
+      const el = document.querySelector('#editor') as any;
+      if(el!==null){
+        const editor = new Editor({
+          el: el,
+          height: '500px',
+          initialEditType: 'wysiwyg',
+          previewStyle: 'vertical',
+          language: 'zh-CN',
+          hideModeSwitch: true,
+          initialValue: res,
+          events: {
+            change: ()=>{
+              setMd(editor)
+            }
+          }
+        });
+        
+        editor.getMarkdown();
+      }
+    })
+  },[])
+
   return (
     <div className='App'>
-      <div className='logo-box'>
-        <a href='https://github.com/electron-vite/electron-vite-react' target='_blank'>
-          <img src={logoVite} className='logo vite' alt='Electron + Vite logo' />
-          <img src={logoElectron} className='logo electron' alt='Electron + Vite logo' />
-        </a>
-      </div>
-      <h1>Electron + Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Electron + Vite logo to learn more
-      </p>
-      <div className='flex-center'>
-        Place static files into the<code>/public</code> folder <img style={{ width: '5em' }} src='./node.svg' alt='Node logo' />
-      </div>
+      <div id="editor">
 
-      <UpdateElectron />
+        {value}
+      </div>
     </div>
   )
 }

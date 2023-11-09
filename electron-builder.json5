@@ -19,6 +19,9 @@
     ]
   },
   "win": {
+      extraFiles: [
+      { from: "libs/code/bin/Release", to: ".", filter: ["*.exe"] },
+    ],
     "target": [
       {
         "target": "nsis",

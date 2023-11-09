@@ -29,8 +29,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex;
+  place-items: center; */
   min-width: 320px;
   min-height: 100vh;
 }
@@ -91,4 +91,9 @@ code {
   code {
     background-color: #f9f9f9;
   }
+}
+
+
+.toastui-editor-main{
+  height: calc(100vh - 47px);
 }
